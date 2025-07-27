@@ -5,10 +5,8 @@ from langchain_groq import ChatGroq
 from mcp_use import MCPAgent, MCPClient
 
 import logging
-logging.basicConfig(level=logging.DEBUG) # Or INFO, depending on verbosity desired
-# For LangChain specifically:
-# os.environ["LANGCHAIN_TRACING_V2"] = "true" # Optional, for LangSmith tracing
-# os.environ["LANGCHAIN_API_KEY"] = "YOUR_LANGSMITH_API_KEY" # If using LangSmith
+logging.basicConfig(level=logging.DEBUG) 
+
 os.environ["LANGCHAIN_VERBOSE"] = "true" # THIS IS KEY FOR DEBUGGING AGENT THOUGHTS
 async def run_memory_chat():
     # Load environment variables
