@@ -1,0 +1,14 @@
+sentence-transformers
+qdrant-client
+transformers
+torch
+scikit-learn
+numpy
+pandas
+joblib
+sympy
+mpmath
+huggingface-hub
+grpcio
+httpx[http2]
+protobuf
