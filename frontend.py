@@ -4,8 +4,8 @@ import requests
 from new_food_qdrant_system import xyz
 
 
-st.set_page_config(page_title="Food AI System", layout="wide")
-st.title("🍽️ AI Food Recommendation System")
+st.set_page_config(page_title="Food recommendation System", layout="wide")
+st.title("Food Recommendation System")
 
 # -------------------------------
 # USER INPUT
@@ -39,7 +39,7 @@ if fat_max < 100:
 # -------------------------------
 # RUN RECOMMENDER
 # -------------------------------
-if st.button("🔍 Recommend Food"):
+if st.button("Recommend Food"):
     if not query.strip():
         st.warning("Please enter a query")
     else:
@@ -57,7 +57,7 @@ if st.button("🔍 Recommend Food"):
 # SHOW RESULTS
 # -------------------------------
 if "food_json" in st.session_state:
-    st.subheader("✅ Recommended Dishes")
+    st.subheader(" Recommended Dishes")
 
     foods = []
 
@@ -78,18 +78,18 @@ if "food_json" in st.session_state:
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("🍳 Fetch Recipes"):
+        if st.button("Fetch Recipes"):
             st.session_state["action"] = "recipe"
 
     with col2:
-        if st.button("📍 Find Restaurants"):
+        if st.button("Find Restaurants"):
             st.session_state["action"] = "restaurant"
 
 # -------------------------------
 # RECIPE FLOW (FastAPI)
 # -------------------------------
 if st.session_state.get("action") == "recipe":
-    st.subheader("🍳 Recipes")
+    st.subheader("Recipes")
 
     for dish in st.session_state["foods"]:
         with st.spinner(f"Fetching recipe for {dish}..."):
@@ -113,7 +113,7 @@ if st.session_state.get("action") == "recipe":
 # RESTAURANT MATCHING (FastAPI)
 # -------------------------------
 if st.session_state.get("action") == "restaurant":
-    st.subheader("📍 Nearby Restaurants")
+    st.subheader("Nearby Restaurants")
 
     payload = {
         "dishes": st.session_state["foods"],
@@ -138,7 +138,7 @@ if st.session_state.get("action") == "restaurant":
 
     for r in data["restaurants"]:
         st.markdown(f"### 🍽️ {r['name']}")
-        st.write(f"📍 Location: {r['location']}")
+        st.write(f"Location: {r['location']}")
         st.write("**Popular dishes:**", ", ".join(r["liked_dishes"]))
         st.write(f"**Match score:** {r['score']}")
         st.markdown("---")
