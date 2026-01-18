@@ -7,9 +7,7 @@ from typing import List
 
 app = FastAPI(title="Restaurant Matching API")
 
-# -------------------------------
-# LOAD CSV ONCE
-# -------------------------------
+
 df = pd.read_csv("zomato.csv")
 
 # Normalize dish_liked column
@@ -20,16 +18,11 @@ def parse_dishes(dish_string: str):
 
 df["dish_list"] = df["dish_liked"].apply(parse_dishes)
 
-# -------------------------------
-# REQUEST SCHEMA
-# -------------------------------
+
 class RestaurantRequest(BaseModel):
     dishes: List[str]
     top_k: int = 10
 
-# -------------------------------
-# SIMILARITY LOGIC
-# -------------------------------
 def compute_score(restaurant_dishes, recommended_dishes):
     score = 0
     for r in recommended_dishes:
@@ -39,9 +32,6 @@ def compute_score(restaurant_dishes, recommended_dishes):
                 break
     return score
 
-# -------------------------------
-# API ENDPOINT
-# -------------------------------
 @app.post("/restaurants/match")
 def match_restaurants(req: RestaurantRequest):
     recommended = [d.lower() for d in req.dishes]
