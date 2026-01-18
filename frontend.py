@@ -137,7 +137,7 @@ if st.session_state.get("action") == "restaurant":
         st.stop()
 
     for r in data["restaurants"]:
-        st.markdown(f"### 🍽️ {r['name']}")
+        st.markdown(f"### {r['name']}")
         st.write(f"Location: {r['location']}")
         st.write("**Popular dishes:**", ", ".join(r["liked_dishes"]))
         st.write(f"**Match score:** {r['score']}")
