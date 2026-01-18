@@ -1,10 +1,8 @@
 import streamlit as st
 import requests
-import asyncio
-import json
 
 from new_food_qdrant_system import xyz
-from app import run_query   # MCP restaurant code
+
 
 st.set_page_config(page_title="Food AI System", layout="wide")
 st.title("🍽️ AI Food Recommendation System")
@@ -112,30 +110,36 @@ if st.session_state.get("action") == "recipe":
             st.warning(f"Recipe not found for {dish}")
 
 # -------------------------------
-# MCP RESTAURANT FLOW
+# RESTAURANT MATCHING (FastAPI)
 # -------------------------------
 if st.session_state.get("action") == "restaurant":
     st.subheader("📍 Nearby Restaurants")
 
-    mcp_query = (
-        "Find nearby restaurants in Bangalore serving: "
-        #+ ", ".join(st.session_state["foods"])
-    )
+    payload = {
+        "dishes": st.session_state["foods"],
+        "top_k": 10
+    }
 
-    with st.spinner("Searching restaurants..."):
-        raw = asyncio.run(run_query(mcp_query))
+    with st.spinner("Finding matching restaurants..."):
+        resp = requests.post(
+            "http://localhost:8000/restaurants/match",
+            json=payload
+        )
 
-    try:
-        parsed = json.loads(raw)
+    if resp.status_code != 200:
+        st.error("Failed to fetch restaurants")
+        st.stop()
 
-        for r in parsed["restaurants"]:
-            st.markdown(f"### 🍽️ {r['name']}")
-            st.write(f"📍 {r['location']}")
-            if r["matching_items"]:
-                st.write("**Matching items:**", ", ".join(r["matching_items"]))
-            st.write(r["notes"])
-            st.markdown("---")
+    data = resp.json()
 
-    except Exception:
-        st.error("Failed to parse MCP response")
-        st.text(raw)
+    if not data["restaurants"]:
+        st.warning("No matching restaurants found")
+        st.stop()
+
+    for r in data["restaurants"]:
+        st.markdown(f"### 🍽️ {r['name']}")
+        st.write(f"📍 Location: {r['location']}")
+        st.write("**Popular dishes:**", ", ".join(r["liked_dishes"]))
+        st.write(f"**Match score:** {r['score']}")
+        st.markdown("---")
+
